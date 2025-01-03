@@ -85,8 +85,19 @@ jobs:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Publish to npm
+      - name: Setup npm and publish
         run: |
-          # Configure npm authentication
+          # Configure npm
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTOMATION_TOKEN }}" > ~/.npmrc
+
+          # Try to verify auth, but don't fail if package doesn't exist yet
+          if npm view ${{ steps.version-check.outputs.name }} &>/dev/null; then
+            echo "Verifying npm authentication..."
+            npm whoami || (echo "npm authentication failed" && exit 1)
+          else
+            echo "First time publishing package ${{ steps.version-check.outputs.name }}"
+          fi
+
+          # Publish package
+          echo "Publishing package..."
           npm publish --access public
