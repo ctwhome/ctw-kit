@@ -75,6 +75,9 @@ You'll need to set up two tokens in your repository's secrets (Settings → Secr
 2. `NPM_TOKEN`: An npm automation token
    - Go to npmjs.com → Access Tokens → Generate New Token
    - Select type: Automation
+   - Make sure 2FA is not required for automation tokens in your npm account settings
+     - Go to npmjs.com → Profile Settings → Authentication & Authorization
+     - Under "Two-Factor Authentication", ensure it's not set to "Required for all operations"
    - Copy the token and add it as a repository secret named `NPM_TOKEN`
 
 After setting up these tokens, the automation will handle everything else - just push your changes to main using conventional commits.
