@@ -11,9 +11,9 @@ permissions:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
+      releases_created: ${{ steps.release.outputs.releases_created }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,10 +23,17 @@ jobs:
       # Create release PR or publish release
       - name: Release
         id: release
-        uses: google-github-actions/release-please-action@v4
+        uses: googleapis/release-please-action@v4
         with:
           config-file: .release-please-config.json
           manifest-file: .release-please-manifest.json
+
+      - name: Debug release outputs
+        run: |
+          echo "Release outputs:"
+          echo "releases_created: ${{ steps.release.outputs.releases_created }}"
+          echo "pr: ${{ steps.release.outputs.pr }}"
+          echo "pr_number: ${{ steps.release.outputs.pr_number }}"
 
       # Auto-approve and merge release PR if created
       - name: Auto-approve and merge release PR
@@ -40,8 +47,8 @@ jobs:
 
   publish:
     needs: release
-    if: ${{ needs.release.outputs.release_created }}
-    runs-on: ubuntu-latest
+    if: ${{ needs.release.outputs.releases_created == 'true' }}
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
