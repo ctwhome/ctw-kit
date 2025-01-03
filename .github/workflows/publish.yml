@@ -90,12 +90,4 @@ jobs:
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          if ! npm publish --access public 2>&1 | grep -q "EOTP"; then
-            echo "Package published successfully"
-          else
-            echo "Error: npm requires 2FA. Please check your npm account settings:"
-            echo "1. Go to npmjs.com → Profile Settings → Authentication & Authorization"
-            echo "2. Under 'Two-Factor Authentication', ensure it's not set to 'Required for all operations'"
-            exit 1
-          fi
+        run: npm publish --access public || (echo "Failed to publish package" && exit 1)
