@@ -21,11 +21,36 @@ jobs:
         id: package-version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
+      - name: Check npm registry for version
+        run: |
+          if npm view ctw-kit@${{ steps.package-version.outputs.version }} version; then
+            echo "Version ${{ steps.package-version.outputs.version }} already exists in npm registry"
+            exit 1
+          fi
+
       - name: Bump version
         id: bump-version
         run: |
           npm version patch --no-git-tag-version
           echo "new_version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Commit version bump
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add package.json
+          git commit -m "chore: bump version to ${{ steps.bump-version.outputs.new_version }}"
+          git push origin HEAD:main
+
+      - name: Create Git tag
+        run: |
+          if ! git rev-parse ${{ steps.bump-version.outputs.new_version }} >/dev/null 2>&1; then
+            git tag ${{ steps.bump-version.outputs.new_version }}
+            git push origin ${{ steps.bump-version.outputs.new_version }}
+          else
+            echo "Tag ${{ steps.bump-version.outputs.new_version }} already exists"
+            exit 1
+          fi
 
       - name: Create Release
         id: create_release
@@ -57,11 +82,3 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-      - name: Commit version bump
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add package.json
-          git commit -m "chore: bump version to ${{ steps.bump-version.outputs.new_version }}"
-          git push origin HEAD:main
