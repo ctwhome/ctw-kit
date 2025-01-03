@@ -22,12 +22,10 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
 
       - name: Release Please
-        uses: googleapis/release-please-action@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        uses: googleapis/release-please-action@v3
         with:
-          config-file: .release-please-config.json
-          manifest-file: .release-please-manifest.json
+          release-type: node
+          package-name: ctw-kit
           token: ${{ secrets.PAT_TOKEN }}
 
   publish:

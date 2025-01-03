@@ -52,26 +52,26 @@ git commit -m "fix: correct button styling"
 git commit -m "feat!: redesign component API"
 ```
 
-When you push to main with conventional commits, the automation will:
-1. Analyze commit messages and determine version bump
-2. Update package.json version
-3. Generate/update CHANGELOG.md
-4. Create a GitHub release
-5. Automatically publish to npm
+The automation process works in two steps:
 
-For example:
-```bash
-# Add your changes
-git add .
+1. When you push to main with conventional commits:
+   ```bash
+   # Features (minor version bump)
+   git commit -m "feat: add new component"
 
-# Commit with conventional commit message
-git commit -m "feat: add new component"  # for new features
-git commit -m "fix: resolve styling issue"  # for bug fixes
-git commit -m "feat!: redesign API"  # for breaking changes
+   # Bug fixes (patch version bump)
+   git commit -m "fix: resolve styling issue"
 
-# Push to main to trigger release
-git push origin main
-```
+   # Breaking changes (major version bump)
+   git commit -m "feat!: redesign API"
+
+   git push origin main
+   ```
+   This creates a release PR that updates versions and changelog.
+
+2. When the release PR is merged:
+   - Creates a GitHub release
+   - Automatically publishes to npm
 
 ### First-time Setup
 
