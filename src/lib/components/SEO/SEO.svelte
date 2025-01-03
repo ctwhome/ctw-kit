@@ -1,11 +1,16 @@
 <script lang="ts">
-  import type { SiteSettings } from "../types";
-
   interface $$Props {
     title?: string;
     desc?: string;
     img?: string;
     siteSettings: SiteSettings;
+  }
+
+  interface SiteSettings {
+    title: string;
+    description: string;
+    image: string;
+    baseUrl: string;
   }
 
   export let siteSettings: SiteSettings;
