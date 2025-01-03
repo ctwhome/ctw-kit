@@ -55,12 +55,12 @@ git push origin main
 ```
 
 The automation will:
-1. Create and merge a release PR
-2. Update the version and changelog
-3. Create a GitHub release
-4. Publish to npm
+1. Check if the version exists in npm registry
+2. Bump the version (patch)
+3. Create a git tag and GitHub release
+4. Build and publish to npm
 
-Everything happens automatically in the correct order - no manual steps needed.
+Everything happens automatically in the correct order - no manual steps needed after the initial setup.
 
 ### First-time Setup
 
