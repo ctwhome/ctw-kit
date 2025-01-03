@@ -73,7 +73,22 @@ git commit -m "feat!: redesign API"  # for breaking changes
 git push origin main
 ```
 
-The automation handles everything - no manual steps needed.
+### First-time Setup
+
+You'll need to set up two tokens in your repository's secrets (Settings → Secrets and variables → Actions):
+
+1. `PAT_TOKEN`: A GitHub Personal Access Token with repo permissions
+   - Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+   - Generate new token (classic)
+   - Select scopes: `repo` (full control of private repositories)
+   - Copy the token and add it as a repository secret named `PAT_TOKEN`
+
+2. `NPM_TOKEN`: An npm automation token
+   - Go to npmjs.com → Access Tokens → Generate New Token
+   - Select type: Automation
+   - Copy the token and add it as a repository secret named `NPM_TOKEN`
+
+After setting up these tokens, the automation will handle everything else - just push your changes to main using conventional commits.
 
 ## License
 
