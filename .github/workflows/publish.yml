@@ -7,35 +7,36 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
-  release-please:
+  release-and-publish:
     runs-on: ubuntu-24.04
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Release Please
-        id: release
-        uses: google-github-actions/release-please-action@v4
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
+      - name: Get version from package.json
+        id: package-version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
-  publish:
-    needs: release-please
-    if: ${{ needs.release-please.outputs.tag_name != '' }}
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
+      - name: Bump version
+        id: bump-version
+        run: |
+          npm version patch --no-git-tag-version
+          echo "new_version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
-          ref: ${{ needs.release-please.outputs.tag_name }}
-          fetch-depth: 0
+          tag_name: ${{ steps.bump-version.outputs.new_version }}
+          release_name: Release ${{ steps.bump-version.outputs.new_version }}
+          draft: false
+          prerelease: false
 
       - uses: oven-sh/setup-bun@v1
         with:
@@ -56,3 +57,11 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+      - name: Commit version bump
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add package.json
+          git commit -m "chore: bump version to ${{ steps.bump-version.outputs.new_version }}"
+          git push origin HEAD:main
