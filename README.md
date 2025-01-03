@@ -12,59 +12,7 @@ npm install ctw-kit
 
 ## Components
 
-### SEO Component
-
-A Svelte component for managing SEO meta tags including Open Graph and Twitter card metadata.
-
-#### Usage
-
-```svelte
-<script lang="ts">
-  import { SEO } from 'ctw-kit';
-  import { siteSettings } from './your-settings';
-
-  // All props are optional and will fall back to siteSettings values
-  // Only siteSettings is required
-</script>
-
-<SEO
-  siteSettings={{
-    title: "Your Site Title",
-    description: "Your site description",
-    image: "/path/to/default-image.jpg",
-    baseUrl: "https://your-site.com"
-  }}
-  title="Optional Page Title"
-  desc="Optional Page Description"
-  img="/optional-page-image.jpg"
-/>
-```
-
-#### Props
-
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| siteSettings | `SiteSettings` | Yes | Object containing default site metadata |
-| title | `string` | No | Page title (falls back to siteSettings.title) |
-| desc | `string` | No | Page description (falls back to siteSettings.description) |
-| img | `string` | No | Page image path (falls back to siteSettings.image) |
-
-#### SiteSettings Interface
-
-```typescript
-interface SiteSettings {
-  title: string;      // Default site title
-  description: string; // Default site description
-  image: string;      // Default image path
-  baseUrl: string;    // Your site's base URL (e.g., https://example.com)
-}
-```
-
-The SEO component will automatically generate:
-- Page title
-- Meta description
-- Twitter Card metadata
-- Open Graph metadata
+- [SEO](src/lib/components/SEO/README.md) - SEO meta tags management including Open Graph and Twitter cards
 
 ## Development
 
@@ -91,14 +39,26 @@ bun run build
 
 ## Publishing
 
-The package is automatically published to NPM when a new version tag is pushed to GitHub. To release a new version:
+This package uses fully automated releases. Simply write commits using [Conventional Commits](https://www.conventionalcommits.org/) format and push to main:
 
-1. Update version in package.json
-2. Create and push a new tag:
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+# New features (minor version bump)
+git commit -m "feat: add new button component"
+
+# Bug fixes (patch version bump)
+git commit -m "fix: correct button styling"
+
+# Breaking changes (major version bump)
+git commit -m "feat!: redesign component API"
 ```
+
+When you push to main, the automation will:
+- Update the version based on commit messages
+- Generate CHANGELOG.md
+- Create a GitHub release
+- Publish to npm
+
+Everything happens automatically - no manual steps or approvals needed.
 
 ## License
 
