@@ -20,8 +20,8 @@
     "src/lib"
   ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build && svelte-package && publint",
+    "dev": "vite dev",
+    "build": "vite build -c vite.lib.config.ts && svelte-package && publint",
     "preview": "vite preview",
     "prepublishOnly": "bun run build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
@@ -31,6 +31,8 @@
     "svelte": "^4.0.0"
   },
   "devDependencies": {
+    "@sveltejs/adapter-auto": "^3.3.1",
+    "@sveltejs/kit": "^2.15.1",
     "@sveltejs/package": "^2.3.7",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "bun-types": "latest",
