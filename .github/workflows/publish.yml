@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  release:
+    types: [created]
 
 permissions:
   contents: write
@@ -11,46 +13,27 @@ permissions:
 
 jobs:
   release:
+    if: github.event_name == 'push'
     runs-on: ubuntu-24.04
-    outputs:
-      releases_created: ${{ steps.release.outputs.releases_created }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Create release PR or publish release
-      - name: Release
-        id: release
+      - name: Release Please
         uses: googleapis/release-please-action@v4
         with:
           config-file: .release-please-config.json
           manifest-file: .release-please-manifest.json
 
-      - name: Debug release outputs
-        run: |
-          echo "Release outputs:"
-          echo "releases_created: ${{ steps.release.outputs.releases_created }}"
-          echo "pr: ${{ steps.release.outputs.pr }}"
-          echo "pr_number: ${{ steps.release.outputs.pr_number }}"
-
-      # Auto-approve and merge release PR if created
-      - name: Auto-approve and merge release PR
-        if: ${{ steps.release.outputs.pr }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ steps.release.outputs.pr }}
-        run: |
-          gh pr review $PR_NUMBER --approve
-          gh pr merge $PR_NUMBER --auto --merge
-
   publish:
-    needs: release
-    if: ${{ needs.release.outputs.releases_created == 'true' }}
+    if: github.event_name == 'release'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
 
       - uses: oven-sh/setup-bun@v1
         with:
