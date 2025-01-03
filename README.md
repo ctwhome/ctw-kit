@@ -1,4 +1,6 @@
-# CTW Kit
+![image](https://github.com/user-attachments/assets/ac5a8c47-e877-4d6f-b65a-f86a7cd40222)
+# ctw-kit
+
 
 Custom components and utilities for Svelte and TailwindCSS (DaisyUI)
 
@@ -12,7 +14,11 @@ npm install ctw-kit
 
 ## Components
 
-- [SEO](src/lib/components/SEO/README.md) - SEO meta tags management including Open Graph and Twitter cards
+- [x] [SEO](src/lib/components/SEO/README.md) - SEO meta tags management including Open Graph and Twitter cards
+- [ ] 
+
+## Utilities
+- [x]
 
 ## Development
 
