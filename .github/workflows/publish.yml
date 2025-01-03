@@ -28,10 +28,13 @@ jobs:
           release-type: node
           package-name: ctw-kit
           token: ${{ secrets.PAT_TOKEN }}
+          default-branch: main
+          bump-minor-pre-major: true
+          bump-patch-for-minor-pre-major: true
 
   publish:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.tag_name != '' }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
