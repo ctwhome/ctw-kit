@@ -39,39 +39,28 @@ bun run build
 
 ## Publishing
 
-This package uses fully automated releases. Simply write commits using [Conventional Commits](https://www.conventionalcommits.org/) format and push to main:
+This package uses fully automated releases. Push your changes to main using [Conventional Commits](https://www.conventionalcommits.org/) format:
 
 ```bash
-# New features (minor version bump)
-git commit -m "feat: add new button component"
+# Features (minor version bump)
+git commit -m "feat: add new component"
 
 # Bug fixes (patch version bump)
-git commit -m "fix: correct button styling"
+git commit -m "fix: resolve styling issue"
 
 # Breaking changes (major version bump)
-git commit -m "feat!: redesign component API"
+git commit -m "feat!: redesign API"
+
+git push origin main
 ```
 
-The automation process works in two steps:
+The automation will:
+1. Create and merge a release PR
+2. Update the version and changelog
+3. Create a GitHub release
+4. Publish to npm
 
-1. When you push to main with conventional commits:
-   ```bash
-   # Features (minor version bump)
-   git commit -m "feat: add new component"
-
-   # Bug fixes (patch version bump)
-   git commit -m "fix: resolve styling issue"
-
-   # Breaking changes (major version bump)
-   git commit -m "feat!: redesign API"
-
-   git push origin main
-   ```
-   This creates a release PR that updates versions and changelog.
-
-2. When the release PR is merged:
-   - Creates a GitHub release
-   - Automatically publishes to npm
+Everything happens automatically in the correct order - no manual steps needed.
 
 ### First-time Setup
 

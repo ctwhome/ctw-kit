@@ -4,17 +4,17 @@ on:
   push:
     branches:
       - main
-  release:
-    types: [created]
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  release:
-    if: github.event_name == 'push'
+  release-please:
     runs-on: ubuntu-24.04
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,6 +22,7 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
 
       - name: Release Please
+        id: release
         uses: googleapis/release-please-action@v3
         with:
           release-type: node
@@ -29,12 +30,14 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
 
   publish:
-    if: github.event_name == 'release'
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ needs.release-please.outputs.tag_name }}
+          fetch-depth: 0
 
       - uses: oven-sh/setup-bun@v1
         with:
